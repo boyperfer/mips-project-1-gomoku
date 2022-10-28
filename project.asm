@@ -1,9 +1,8 @@
 .data
 X: .byte 'X'
 O: .byte 'O'
-dSpace: .asciiz "  "
+Space: .asciiz " "
 tSpace: .asciiz "   "
-qSpace: .asciiz "     "
 read_row_matrix_prompt_p:   .asciiz "Enter an integer: "
 line: .asciiz "\n"
 ###########################################################
@@ -48,18 +47,17 @@ read_row_matrix_loop_outer_end:
 
 li $t3, 0
 li $v0, 4
-la $a0, qSpace 
+la $a0, tSpace 
 syscall
 print_number:
 	beq $t3, $t2, print_matrix	
-	beq $t3, 8, print_J
 
 	li $v0, 11 
 	addi $a0, $t3, 65
 	syscall
 
 	li $v0, 4 
-	la $a0, dSpace
+	la $a0, Space
 	syscall
 #	li $v0, 11
 #	li $a0, 9 
@@ -68,29 +66,6 @@ print_number:
 	addi $t3, $t3, 1
 
 	j print_number
-
-print_J:
-	slti $t0, $t3, 10
-	beq $t0, $zero, print_number
-	li $v0, 11 
-	li $a0, ' '
-	syscall
-
-
-	li $v0, 11 
-	addi $a0, $t3, 65
-	syscall
-
-	li $v0, 4 
-	la $a0, dSpace
-	syscall
-#	li $v0, 11
-#	li $a0, 9 
-#	syscall
-
-	addi $t3, $t3, 1
-
-	j print_J 
 
 print_matrix:
 	li $v0, 4
@@ -116,7 +91,7 @@ print_matrix_row:
 	#li $a0, ' '
 	#syscall
 	li $v0, 4
-	la $a0, dSpace
+	la $a0, Space
 	syscall
 
 
@@ -137,7 +112,7 @@ print_matrix_row:
 #	syscall
 
 	li $v0, 4
-	la $a0, tSpace 
+	la $a0, Space 
 	syscall
 
     addiu $t4, $t4, 1       # increment inner-loop counter
@@ -159,7 +134,7 @@ syscall
 
 print_column_1_digit:
 	li $v0, 4 
-	la $a0, dSpace
+	la $a0, Space
 	syscall
 	
 	li $v0, 1 
@@ -170,7 +145,7 @@ print_column_1_digit:
 	#li $a0, ' '
 	#syscall
 	li $v0, 4
-	la $a0, dSpace
+	la $a0, Space
 	syscall
 
 	j print_matrix_column
