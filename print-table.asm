@@ -54,8 +54,8 @@ print_table:
 		print_matrix_column:
 		bge $t4, $s2, print_matrix_column_end		# if column counter >= column size ? go to next row
 
-		mul $t5, $t3, $s2							# $t5 (array pointer) <-- row counter * row size 
-		add $t5, $t5, $t4							# $t5 <-- row counter* row size + column counter
+		mul $t5, $t3, $s2							# $t5 (array pointer) <-- row counter * column size 
+		add $t5, $t5, $t4							# $t5 <-- row counter* column size + column counter
 		add $t5, $s0, $t5							# $t5 <-- base address + (row counter * row size + column counter)
 
 
