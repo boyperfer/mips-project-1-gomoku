@@ -7,10 +7,14 @@ main:
 
 	jal read_table
 
-	whileYes:
-	
+	play:
 		jal print_table
 		jal read_input
+
+		move $a0, $v0
+		li $a1, 'X'
+		jal check_row
+
 		jal clear_screen
-		j whileYes
+		j play
 
