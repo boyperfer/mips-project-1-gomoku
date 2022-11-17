@@ -33,8 +33,8 @@ read_input:
 		j loop						# jump to loop
 
 parse_string:           
-	li $t1, 4						# $t1 = 4
-	bne $t1, $t2, error				# if length of input != 4 ? jump to error
+	li $t1, 6						# $t1 = 6 
+	bge $t2, $t1, error				# if length of input >= 6 ? jump to error
 
 	addi $s4, $s4, -1				# reposition array pointer to last char before newline char
 
