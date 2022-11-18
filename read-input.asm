@@ -91,13 +91,14 @@ done:
 	add $t5, $t5, $t7               # $t5 <-- row index * column size + column index
 	add $t5, $s0, $t5				# $t5 <-- base address + (row index * column size + column index)
 
+	move $v0, $t6					# return row index
+	move $v1, $t7					# return column index
+
 	li $t7, '.'						# load '.'
 	lb $t8, ($t5)					# load $t5 operand
 	bne $t8, $t7, overlap			# if $t7 is not equal to $t8, jump to overlap
 	li $t7, 'X'						# load 'X'
 	sb $t7, 0($t5)					# store 'X' into array
-	move $v0, $t6					# return row index
-	move $v1, $t7					# return column index
 	jr $ra							# jump back to calling function
 
 overlap:
