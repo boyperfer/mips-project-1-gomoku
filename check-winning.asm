@@ -1,5 +1,6 @@
 .data
 winingMessage: .asciiz "\nWinning"
+check:	.asciiz "Hello, You was here"
 .text
 .globl check_winning 
 
@@ -78,35 +79,22 @@ lower_bound_for_vertical:
 	j loop_on_the_smaller_partition 
 
 lower_bound_for_L_diagonal:
-#	beq $t7, $0, self_lower					# if the column index = 0 then the lower bound is the cell itself
+	beq $t7, $0, self_lower				# if the column index = 0 then the lower bound is the cell itself
 	mul $t6, $t8, $s2					# $t6 <-- row index * column size (the first position of the row)
 	mul $s3, $t7, $s2					# $s3 <-- column index * column size
 	sub $t6, $t6, $s3					# move lower bound up based on the column index	
 	add $t6, $t6, $s0					# address of lower bound
 	addi $t4, $s2, 1					# $t4 = column size + 1
 	mul $t4, $t4, -1					# the number of steps for each move for pointer = -(column size + 1)
-	#move $t6, $t9						# get the current cell
-	#move $s3, $t8						# get the row index
-	#addi $s4, $s2, 1					# $s4 <-- column size + 1
-	#mul $t4, $s4, $s3					# $t4 <-- (column size + 1) * row index
-	#sub $t6, $t6, $t4					# $t6 <-- current cell - [(column size + 1 ) * row index]
-	#add $t6, $t6, $s0					# lower_bound += baseAddress
-	#mul $t4, $s4, -1					# the number of steps for each move for pointer = -(column size + 1)
 	
-	#blt $t6, $0, adjust_lower				# if $t6 is negative, adjust the lower bound
 	j loop_on_the_smaller_partition		
 			
-	# because column index = 0, do not need to loop on smaller partition
-	# and because itself -> winning counter += 1, and so start from initialize_larger_partition
-#	self_lower:
-#		#li $t4, 0					# the number of steps for each move for pointer = 0
-#		#move $t6, $t9					# get the current cell 
-#		addi $t3, $t3, 1
-#		j initialize_larger_partition 
-		
-	#adjust_lower:
-	#	add $t6, $t6, $s4				# $t4 <-- current cell - [(column size + 1) * (row index - 1)] 
-	#	j loop_on_the_smaller_partition
+	
+	self_lower:
+		lb $t1, ($t9)							# load symbol at address t9
+		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
+		addi	$t3, $t3, 1						# if the symbol is "X or O" increase winning counter by 1
+		j initialize_larger_partition				# jump to inialize_larger_partition
 
 upper_bound_for_horizontal:
 	li $t4, 1
@@ -148,9 +136,10 @@ upper_bound_for_L_diagonal:
 
 	add $t4, $0, $s2					# $t4 <-- column size
 	addi $t4, $t4, 1					# $t4 <-- column size + 1
-	move $a0, $t4
-	li $v0, 1
-	syscall
+	#move $a0, $t4
+	#li $v0, 1
+	#syscall
+	
 	#sub $s3, $s4, 1						# $s3 <-- column size - 1
 	#beq $t7, $s3, self_upper				# if the column index = column size - 1 then the upper bound is the cell itself
 	
