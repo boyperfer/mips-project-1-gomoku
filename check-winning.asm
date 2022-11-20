@@ -67,30 +67,43 @@ initialize_larger_partition:
 	beq $a3, 2, upper_bound_for_L_diagonal
 	
 lower_bound_for_horizontal:
+	beq	$t7, $0, lower_H				# if the row index = 0 then the current cell is the lower bound of the row
 	mul $t6, $t8, $s2					# lower_bound <-- row index* column size 
 	add $t6, $t6, $s0					# lower_bound += baseAddress
-	li $t4, -1						# the number of steps for each move for pointer = -1
+	li $t4, -1							# the number of steps for each move for pointer = -1
 	j loop_on_the_smaller_partition 
+	
+	lower_H: 
+		lb $t1, ($t9)							# load symbol at register $t9
+		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
+		addi $t3, $t3, 1						# if the symbol is "X or O" increase winning counter by 1
+		j initialize_larger_partition				# jump to initialize_larger_partition
 
 lower_bound_for_vertical:
+	beq $t8, $0, lower_V				# if the column index = 0 then the current cell is the lower bound of the column
 	move $t6, $t7						# lower bound is column index 
 	add $t6, $t6, $s0					# lower_bound += baseAddress
 	sub $t4, $zero, $s2					# the number of steps for each move for pointer =- column size 
 	j loop_on_the_smaller_partition 
+	
+	lower_V:
+		lb $t1, ($t9)							# load symbol at register $t9
+		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
+		addi $t3, $t3, 1						# if the symbol is "X or O" increase winning counter by 1
+		j initialize_larger_partition				# jump to initialize_larger_partition
 
 lower_bound_for_L_diagonal:
-	beq $t7, $0, self_lower				# if the column index = 0 then the lower bound is the cell itself
+	beq $t7, $0, lower_L				# if the column index = 0 then the lower bound is the cell itself
 	mul $t6, $t8, $s2					# $t6 <-- row index * column size (the first position of the row)
 	mul $s3, $t7, $s2					# $s3 <-- column index * column size
 	sub $t6, $t6, $s3					# move lower bound up based on the column index	
 	add $t6, $t6, $s0					# address of lower bound
 	addi $t4, $s2, 1					# $t4 = column size + 1
 	mul $t4, $t4, -1					# the number of steps for each move for pointer = -(column size + 1)
-	
 	j loop_on_the_smaller_partition		
 			
 	
-	self_lower:
+	lower_L:
 		lb $t1, ($t9)							# load symbol at address t9
 		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
 		addi	$t3, $t3, 1						# if the symbol is "X or O" increase winning counter by 1
