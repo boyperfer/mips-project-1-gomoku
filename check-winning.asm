@@ -128,8 +128,6 @@ upper_bound_for_vertical:
 	j set_up_larger_partition 
 
 upper_bound_for_L_diagonal:
-	#beq $t3, $s7, sufficient_condition			# if winning counter == 5 go to sufficient_condition
-
 	addi $t6, $t8, 1					# $t6 <-- row index + 1
 	mul $t6, $t6, $s2					# $t6 <-- (row index + 1) * column size 
 	addi $t6, $t6, -1					# upper bound begins at the end position of the row
@@ -139,45 +137,9 @@ upper_bound_for_L_diagonal:
 	sub $t6, $t6, $s3					# move upper bound up based on the column index	
 	add $t6, $s0, $t6					# address of upper bound
 	addi $t4, $s2, 1					# $t4 = column size + 1 (the number of steps for each move for pointer)
-	#ex matrix 5x5
-	# 0  1  2  3  4 
-	# 5  6  7  8  9
-	# 10 11 12 13 14
-	# 15 16 17 18 19
-	# 20 21 22 23 24 (matrix end)
-	# 25			 (25 would be upper bound if pointer move to or over 25 then done)
-
-	add $t4, $0, $s2					# $t4 <-- column size
-	addi $t4, $t4, 1					# $t4 <-- column size + 1
-	#move $a0, $t4
-	#li $v0, 1
-	#syscall
-	
-	#sub $s3, $s4, 1						# $s3 <-- column size - 1
-	#beq $t7, $s3, self_upper				# if the column index = column size - 1 then the upper bound is the cell itself
-	
-	#move $t6, $t5						# get the current cell
-	#addi $s5, $s2, 1					# $s5 <-- column size + 1
-	#addi $t4, $t8, 1					# $t4 <-- row index + 1
-	#sub $t4, $s1, $t4					# $t4 <-- row size - row index + 1
-	#mul $t4, $t4, $s5					# $t4 <-- (row size - row index + 1) * (column size + 1)
-	#add  $t6, $t6, $t4					# $t6 <-- current cell + [(row size - row index + 1) * (column size + 1)]
-	#add $t6, $t6, $s0					# upper_bound += baseAddress
-	#move $t4, $s5						# the number of steps for each move for pointer = column size + 1
-
+	addi $t4, $s2, 1					# $t4 <-- column size + 1
 	beq $t3, $s7, sufficient_condition
-
-	#bgt $t6, $s4, adjust_upper				# if $t6 is greater than the last index, adjust the upper bound (last row)
 	j set_up_larger_partition		
-			
-#	self_upper:
-#		li $t4, 0					# the number of steps for each move for pointer = 0
-#		move $t6, $t9					# get the current cell
-#		j set_up_larger_partition
-		
-#K	adjust_upper:
-#K		sub $t6, $t6, $s4				# $t6 <-- current cell + [(row size - row index) * (column size + 1)]
-#K		j set_up_larger_partition
 
 sufficient_condition:
 	move $t9, $t5						# $t9 <-- initialize pointer to move
