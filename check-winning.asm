@@ -27,16 +27,16 @@ check_winning:
 	add $t9, $t9, $t4					# backtracking 1 move 
 	lb $t1, ($t9)						# load symbol at address t1
 	bne $t1, $t2, initialize_larger_partition 		# if t1 is not "X" jump to initialize_larger_partition 
-	j done_checking_row					# if it is (overline) -> done_checking_row	
+	j done_checking						# if it is (overline) -> done_checking
 
 	set_up_larger_partition:
 	move $t9, $t5						# initialize pointer to move
 	add $t9, $t9, $t4					# pointer begins at larger partition
 
 	loop_on_the_larger_partition:
-	bge $t9, $t6, done_checking_row				# if pointer move to or over upper bound (>= upper bound) -> done_checking_row
+	bge $t9, $t6, done_checking				# if pointer move to or over upper bound (>= upper bound) -> done_checking
 	lb $t1, ($t9)						# load symbol at address t1
-	bne $t1, $t2, done_checking_row				# if it is not X -> done_checking_row
+	bne $t1, $t2, done_checking				# if it is not X -> done_checking
 	addi $t3, $t3, 1					# winning counter += 1
 	move $a0, $t3
 	li $v0, 1
@@ -110,7 +110,7 @@ lower_bound_for_L_diagonal:
 		j initialize_larger_partition				# jump to inialize_larger_partition
 
 upper_bound_for_horizontal:
-	li $t4, 1
+	li $t4,	1
 	beq $t3, $s7, sufficient_condition			# if winning counter == 5 go to sufficient_condition
 	add $t6, $t6, $s2					# upper bound is lower bound adding column size
 
@@ -134,7 +134,7 @@ upper_bound_for_L_diagonal:
 	addi $s3, $t7, 1					# $s3 <-- column index + 1
 	sub $s3, $s2, $s3					# $s3 <-- column size - (column index + 1)
 	mul $s3, $s3, $s2					# $s3 <-- column size * (column size - (column index + 1))
-	sub $t6, $t6, $s3					# move upper bound up based on the column index	
+	sub $t6, $t6, $s3					# move upper bound down based on the column index	
 	add $t6, $s0, $t6					# address of upper bound
 	addi $t4, $s2, 1					# $t4 = column size + 1 (the number of steps for each move for pointer)
 	addi $t4, $s2, 1					# $t4 <-- column size + 1
@@ -154,7 +154,9 @@ sufficient_condition:
 	bne $t1, $t2, winning					# if not "X" jump to winning
 
 
-done_checking_row:
+done_checking:
+	move $v0, $t3					# return winningCounter
+	move $v1, $t9					# return the address of the cell stopped checking
 	jr $ra							# return to main
 	
 winning:
