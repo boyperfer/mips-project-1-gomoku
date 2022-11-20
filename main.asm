@@ -26,6 +26,12 @@ main:
 		li $a3, 1 
 		jal check_winning 
 
-		jal clear_screen
+		lw $a0, rowI
+		lw $a1, colI 
+		li $a2, 'X'
+		li $a3, 2 
+		jal check_winning 
+
+		#jal clear_screen
 		j play
 
