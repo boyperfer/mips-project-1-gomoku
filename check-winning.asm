@@ -1,5 +1,6 @@
 .data
 winingMessage: .asciiz "\nWinning"
+check:	.asciiz	"Here"
 .text
 .globl check_winning 
 
@@ -26,16 +27,16 @@ check_winning:
 	add $t9, $t9, $t4					# backtracking 1 move 
 	lb $t1, ($t9)						# load symbol at address t1
 	bne $t1, $t2, initialize_larger_partition 		# if t1 is not "X" jump to initialize_larger_partition 
-	j done_checking_row					# if it is (overline) -> done_checking_row	
+	j done_checking						# if it is (overline) -> done_checking_row	
 
 	set_up_larger_partition:
 	move $t9, $t5						# initialize pointer to move
 	add $t9, $t9, $t4					# pointer begins at larger partition
 
 	loop_on_the_larger_partition:
-	bge $t9, $t6, done_checking_row				# if pointer move to or over upper bound (>= upper bound) -> done_checking_row
+	bge $t9, $t6, done_checking				# if pointer move to or over upper bound (>= upper bound) -> done_checking_row
 	lb $t1, ($t9)						# load symbol at address t1
-	bne $t1, $t2, done_checking_row				# if it is not X -> done_checking_row	
+	bne $t1, $t2, done_checking				# if it is not X -> done_checking_row	
 	addi $t3, $t3, 1					# winning counter += 1
 	add $t0, $t0, $t4					# moves moved on the larger partition += the number of steps for each move for pointer
 	beq $t3, $s7, sufficient_condition			# if winning counter == 5 go to sufficient_condition
@@ -53,14 +54,14 @@ initialize_smaller_partition:
 
 	beq $a3, 0, lower_bound_for_horizontal
 	beq $a3, 1, lower_bound_for_vertical
-	beq $a3, 2, lower_bound_for_R_diagonal
-	beq $a3, 3, lower_bound_for_L_diagonal
+	beq $a3, 2, lower_bound_for_L_diagonal
+	beq $a3, 3, lower_bound_for_R_diagonal
 
 initialize_larger_partition:
 	beq $a3, 0, upper_bound_for_horizontal
 	beq $a3, 1, upper_bound_for_vertical
-	beq $a3, 2, upper_bound_for_R_diagonal
-	beq $a3, 3, upper_bound_for_L_diagonal
+	beq $a3, 2, upper_bound_for_L_diagonal
+	beq $a3, 3, upper_bound_for_R_diagonal
 	
 lower_bound_for_horizontal:
 	beq $t7, $0, lower_H					# if the col index = 0 then the current cell is the lower bound of the row
@@ -114,7 +115,7 @@ lower_bound_for_R_diagonal:
 	sub $t6, $t5, $t6					# address of lower bound
 	blt $t6, $0, adjust_lower				# if $t6 is negative	
 	addi $t4, $s2, -1					# $t4 <-- column size - 1
-	mul $t4, $t4, -1					# the number of steps for each move for pointer = - column size - 1
+	mul $t4, $t4, -1					# the number of steps for each move for pointer = - row size
 	j loop_on_the_smaller_partition					
 			
 	lower_R:
@@ -203,8 +204,8 @@ sufficient_condition:
 
 
 done_checking:
-	move $v0, $t3						# return winningCounter
-	move $v1, $t9						# return the address of the cell stopped checking
+	move $v0, $t3					# return winningCounter
+	move $v1, $t9			
 	jr $ra							# return to main
 	
 winning:
@@ -217,3 +218,4 @@ winning:
 
 	li $v0, 10						# code for exit
 	syscall							# exit
+
