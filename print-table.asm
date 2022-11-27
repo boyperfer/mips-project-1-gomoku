@@ -2,6 +2,7 @@
 Space: .asciiz " "
 tSpace: .asciiz "   "
 newline: .asciiz "\n"
+pvsc: .asciiz "X/you      vs.    O/gomoku"
 ###########################################################
 
 .text
@@ -80,7 +81,14 @@ print_table:
 
 		j print_matrix_row							# jump back to print_matrix_row
 		
-	print_matrix_row_end:					
+	print_matrix_row_end:
+		li $v0, 4
+		la $a0, pvsc
+		syscall
+		
+		li $v0, 11
+		li $a0, '\n'	
+		syscall					
 		jr $ra										# jump back to calling function
 
 	print_column_1_digit:
