@@ -1,6 +1,5 @@
 .data
 winingMessage: .asciiz "\nWinning"
-check:	.asciiz	"Here"
 .text
 .globl check_winning 
 
@@ -115,7 +114,7 @@ lower_bound_for_R_diagonal:
 	sub $t6, $t5, $t6					# address of lower bound
 	blt $t6, $0, adjust_lower				# if $t6 is negative	
 	addi $t4, $s2, -1					# $t4 <-- column size - 1
-	mul $t4, $t4, -1					# the number of steps for each move for pointer = - row size
+	mul $t4, $t4, -1					# the number of steps for each move for pointer = - column size - 1
 	j loop_on_the_smaller_partition					
 			
 	lower_R:
