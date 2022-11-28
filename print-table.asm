@@ -2,7 +2,7 @@
 Space: .asciiz " "
 tSpace: .asciiz "   "
 newline: .asciiz "\n"
-pvsc: .asciiz "X/you      vs.    O/gomoku"
+pvsc: .asciiz "X/you      vs.    O/computer"
 ###########################################################
 
 .text
