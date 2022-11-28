@@ -4,6 +4,7 @@
 	winningCounterHorizontal: .word 0
 	winningCounterVertical: .word 0
 	winningCounterLeftDiagonal: .word 0
+	winningCounterRightDiagonal: .word 0
 .text
 
 .globl player_play
@@ -47,22 +48,38 @@ player_play:
 		li $a2, 'X'				# load 'X'
 		li $a3, 3 				# check right diagonal
 		jal check_winning 			# jump check_winning
+		sw $v0, winningCounterRightDiagonal	 # store winningCounter of left diagonal to globl pointer offset 8
+		sw $v1, 12($gp)				# store the cell stopped checking
 
 		lw $t1, winningCounterHorizontal	# load winningCounterHorizontal
 		lw $t2, winningCounterVertical		# load winningCounterVertical 
 		lw $t3, winningCounterLeftDiagonal	# load winningCounterLeftDiagonal
+		lw $t4, winningCounterRightDiagonal # load winningCounterRightDiagonal
 
-		bge $t1, $t2, compareHorAndLDiag	# winningCounterHorizontal >= winningCounterVertical ? compareHorAndLDiag : compareVerAndLDiag
-		j compareVerAndLDiag
+		bge $t1, $t2, compareHorAndLDiagAndRDiag	# winningCounterHorizontal >= winningCounterVertical ? compareHorAndLDiag : compareVerAndLDiag
+		j compareVerAndLDiagAndRDiag
 
 
-compareHorAndLDiag:
-	bge $t1, $t3, horizontalProbing 
-	j leftDiagProbing
+compareHorAndLDiagAndRDiag:
+	bge $t1, $t3, compareHorAndRDiag 
+	j compareLDiagAndRDiag 
 
-compareVerAndLDiag:
-	bge $t2, $t3, verticalProbing 
-	j leftDiagProbing
+compareVerAndLDiagAndRDiag:
+	bge $t2, $t3, compareVerAndRDiag 
+	j compareLDiagAndRDiag 
+
+compareHorAndRDiag:
+	bge $t1, $t4, horizontalProbing	
+	j rightDiagProbing
+
+compareLDiagAndRDiag:
+	bge $t3, $t4, leftDiagProbing
+	j rightDiagProbing
+
+compareVerAndRDiag:
+	bge $t2, $t4, verticalProbing
+	j rightDiagProbing
+
 	
 horizontalProbing:
 	lw $v0, ($gp)					# return the cell
@@ -78,6 +95,12 @@ leftDiagProbing:
 	lw $v0, 8($gp)					# return the cell
 	move $v1, $s2					# $v1 <-- column size 
 	addi $v1, $v1, 1				# return the steps for probing (column size + 1)
+	j backToCalling
+
+rightDiagProbing:
+	lw $v0, 12($gp)
+	move $v1, $s2
+	addi $v1, $v1, -1
 	j backToCalling
 
 backToCalling:
