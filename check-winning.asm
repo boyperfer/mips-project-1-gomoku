@@ -1,6 +1,10 @@
 .data
 winingMessage: .asciiz "\nWinning"
 check:	.asciiz	"Here"
+winingMessage: .asciiz " Win"
+player: .asciiz "\nPlayer"
+computer: .asciiz "\nComputer"
+symbol: .word 0
 .text
 .globl check_winning 
 
@@ -27,16 +31,17 @@ check_winning:
 	add $t9, $t9, $t4					# backtracking 1 move 
 	lb $t1, ($t9)						# load symbol at address t1
 	bne $t1, $t2, initialize_larger_partition 		# if t1 is not "X" jump to initialize_larger_partition 
-	j done_checking_row					# if it is (overline) -> done_checking_row	
+	j done_checking						# if it is (overline) -> done_checking_row	
 
 	set_up_larger_partition:
 	move $t9, $t5						# initialize pointer to move
 	add $t9, $t9, $t4					# pointer begins at larger partition
+	sw $a2, symbol						# store the symbol for print message
 
 	loop_on_the_larger_partition:
-	bge $t9, $t6, done_checking_row				# if pointer move to or over upper bound (>= upper bound) -> done_checking_row
+	bge $t9, $t6, done_checking				# if pointer move to or over upper bound (>= upper bound) -> done_checking_row
 	lb $t1, ($t9)						# load symbol at address t1
-	bne $t1, $t2, done_checking_row				# if it is not X -> done_checking_row	
+	bne $t1, $t2, done_checking				# if it is not X -> done_checking_row	
 	addi $t3, $t3, 1					# winning counter += 1
 	add $t0, $t0, $t4					# moves moved on the larger partition += the number of steps for each move for pointer
 	beq $t3, $s7, sufficient_condition			# if winning counter == 5 go to sufficient_condition
@@ -51,17 +56,19 @@ initialize_smaller_partition:
 	add $t5, $t5, $t7               			# $t5 <-- row index * column size + column index
 	add $t5, $s0, $t5					# $t5 <-- base address + (row index * column size + column index)
 	move $t9, $t5						# $t9 <-- initialize pointer to move
+	sw $a2, symbol						# store the symbol for print message
+
 
 	beq $a3, 0, lower_bound_for_horizontal
 	beq $a3, 1, lower_bound_for_vertical
-	beq $a3, 2, lower_bound_for_R_diagonal
-	beq $a3, 3, lower_bound_for_L_diagonal
+	beq $a3, 2, lower_bound_for_L_diagonal
+	beq $a3, 3, lower_bound_for_R_diagonal
 
 initialize_larger_partition:
 	beq $a3, 0, upper_bound_for_horizontal
 	beq $a3, 1, upper_bound_for_vertical
-	beq $a3, 2, upper_bound_for_R_diagonal
-	beq $a3, 3, upper_bound_for_L_diagonal
+	beq $a3, 2, upper_bound_for_L_diagonal
+	beq $a3, 3, upper_bound_for_R_diagonal
 	
 lower_bound_for_horizontal:
 	beq $t7, $0, lower_H					# if the col index = 0 then the current cell is the lower bound of the row
@@ -203,12 +210,21 @@ sufficient_condition:
 	bne $t1, $t2, winning					# if not "X" jump to winning
 
 
-done_checking_row:
+done_checking:
+	move $v0, $t3					# return winningCounter
+	move $v1, $t9			
 	jr $ra							# return to main
 	
 winning:
 	jal clear_screen					# clear screen
 	jal print_table						# print winning table
+	
+	lw $t1, symbol
+	beq $t1, 88, playerwin					# if the symbol is X then the player win else the computer win
+	
+	li $v0, 4
+	la $a0, computer
+	syscall
 	
 	li $v0, 4						# code for print string
 	la $a0, winingMessage					# load message winning
@@ -216,3 +232,16 @@ winning:
 
 	li $v0, 10						# code for exit
 	syscall							# exit
+	
+playerwin:
+	li $v0, 4
+	la $a0, player
+	syscall
+	
+	li $v0, 4						# code for print string
+	la $a0, winingMessage					# load message winning
+	syscall							# print
+
+	li $v0, 10						# code for exit
+	syscall							# exit
+

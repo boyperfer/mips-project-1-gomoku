@@ -3,7 +3,7 @@ Space: .asciiz " "
 tSpace: .asciiz "   "
 newline: .asciiz "\n"
 lastMove: .asciiz "Last move: "
-###########################################################
+pvsc: .asciiz "X/you      vs.    O/computer"
 
 .text
 .globl print_table 
@@ -106,6 +106,14 @@ print_table:
 		la $a0, newline
 		syscall
 					
+	print_matrix_row_end:
+		li $v0, 4
+		la $a0, pvsc
+		syscall
+		
+		li $v0, 11
+		li $a0, '\n'	
+		syscall					
 		jr $ra										# jump back to calling function
 
 	print_column_1_digit:

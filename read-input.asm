@@ -3,7 +3,6 @@ array: .space 6    #reserves space for a 6 elem array
 char: .space 2
 prompt: .asciiz "move (EX: 2 A)? "
 errorMessage: .asciiz "Please enter proper syntax: \n"
-overlapMessage: .asciiz "Overlap!! please enter another: \n"
 space: .ascii " "
 newline: .asciiz "\n"
 .text           #instructions follow
@@ -98,17 +97,10 @@ done:
 
 	li $t7, '.'						# load '.'
 	lb $t8, ($t5)					# load $t5 operand
-	bne $t8, $t7, overlap			# if $t7 is not equal to $t8, jump to overlap
+	bne $t8, $t7, error				# if $t7 is not equal to $t8 (overlap), jump to error
 	li $t7, 'X'						# load 'X'
 	sb $t7, 0($t5)					# store 'X' into array
 	jr $ra							# jump back to calling function
-
-overlap:
-li $v0, 4							# code to print string
-la $a0, overlapMessage				# load overlapMessage 
-syscall								# print
-
-j read_input						# print read_input
 
 error:
 li $v0, 4							# code to print string
