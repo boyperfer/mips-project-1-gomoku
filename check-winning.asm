@@ -3,6 +3,7 @@ check:	.asciiz	"Here"
 winingMessage: .asciiz " Win"
 player: .asciiz "\nPlayer"
 computer: .asciiz "\nComputer"
+again: .asciiz "\nPlay again?(Y/N) "
 symbol: .word 0
 .text
 .globl check_winning 
@@ -240,7 +241,21 @@ playerwin:
 	li $v0, 4						# code for print string
 	la $a0, winingMessage					# load message winning
 	syscall							# print
+	
+	li $v0, 4						# ask the player if they want to play again
+	la $a0, again
+	syscall
+	
+	li $v0, 12						# get the user input
+	syscall
+	
+	beq $v0, 89, play_again		# if Y go to play_again, else terminate the program
 
 	li $v0, 10						# code for exit
 	syscall							# exit
+	
+play_again:
+	jal clear_screen				# clear the screen
+	li $t3, 0						# reset winning counter
+	jal main						# start a new match from main
 

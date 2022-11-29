@@ -3,6 +3,7 @@ rowI: .word 0
 colI: .word 0
 maxMove: .word 0
 drawMessage: .asciiz "Draw"
+again: .asciiz "\nPlay again?(Y/N) "
 pri: .word 0
 pci: .word 0
 cri: .word 0
@@ -45,5 +46,18 @@ main:
 		la $a0, drawMessage
 		syscall
 		
+		li $v0, 4						# ask the player if they want to play again
+		la $a0, again
+		syscall
+	
+		li $v0, 12						# get the user input
+		syscall
+	
+		beq $v0, 89, play_again
+		
 		li $v0, 10		# terminate the program
 		syscall
+play_again:
+	jal clear_screen				# clear the screen
+	li $t3, 0						# reset winning counter
+	j main						# start a new match from main
