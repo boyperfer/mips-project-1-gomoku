@@ -1,5 +1,4 @@
 .data
-winingMessage: .asciiz "\nWinning"
 check:	.asciiz	"Here"
 winingMessage: .asciiz " Win"
 player: .asciiz "\nPlayer"

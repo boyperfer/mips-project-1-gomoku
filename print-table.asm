@@ -81,31 +81,6 @@ print_table:
 
 		j print_matrix_row							# jump back to print_matrix_row
 		
-	print_matrix_row_end:		
-		li $v0, 4
-		la $a0, newline
-		syscall
-		
-		li $v0, 4
-		la $a0, lastMove
-		syscall
-		
-		li $v0, 11
-		move $a0, $k0
-		syscall
-		
-		li $v0, 4
-		la $a0, Space
-		syscall
-		
-		li $v0, 11
-		move $a0, $k1
-		syscall
-		
-		li $v0, 4
-		la $a0, newline
-		syscall
-					
 	print_matrix_row_end:
 		li $v0, 4
 		la $a0, pvsc
