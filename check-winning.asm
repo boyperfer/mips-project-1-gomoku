@@ -1,6 +1,9 @@
 .data
-winingMessage: .asciiz "\nWinning"
 check:	.asciiz	"Here"
+winingMessage: .asciiz " Win"
+player: .asciiz "\nPlayer"
+computer: .asciiz "\nComputer"
+symbol: .word 0
 .text
 .globl check_winning 
 
@@ -32,6 +35,7 @@ check_winning:
 	set_up_larger_partition:
 	move $t9, $t5						# initialize pointer to move
 	add $t9, $t9, $t4					# pointer begins at larger partition
+	sw $a2, symbol						# store the symbol for print message
 
 	loop_on_the_larger_partition:
 	bge $t9, $t6, done_checking				# if pointer move to or over upper bound (>= upper bound) -> done_checking_row
@@ -51,6 +55,8 @@ initialize_smaller_partition:
 	add $t5, $t5, $t7               			# $t5 <-- row index * column size + column index
 	add $t5, $s0, $t5					# $t5 <-- base address + (row index * column size + column index)
 	move $t9, $t5						# $t9 <-- initialize pointer to move
+	sw $a2, symbol						# store the symbol for print message
+
 
 	beq $a3, 0, lower_bound_for_horizontal
 	beq $a3, 1, lower_bound_for_vertical
@@ -211,6 +217,25 @@ done_checking:
 winning:
 	jal clear_screen					# clear screen
 	jal print_table						# print winning table
+	
+	lw $t1, symbol
+	beq $t1, 88, playerwin					# if the symbol is X then the player win else the computer win
+	
+	li $v0, 4
+	la $a0, computer
+	syscall
+	
+	li $v0, 4						# code for print string
+	la $a0, winingMessage					# load message winning
+	syscall							# print
+
+	li $v0, 10						# code for exit
+	syscall							# exit
+	
+playerwin:
+	li $v0, 4
+	la $a0, player
+	syscall
 	
 	li $v0, 4						# code for print string
 	la $a0, winingMessage					# load message winning

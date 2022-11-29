@@ -2,8 +2,8 @@
 Space: .asciiz " "
 tSpace: .asciiz "   "
 newline: .asciiz "\n"
-pvsc: .asciiz "X/you      vs.    O/gomoku"
-###########################################################
+lastMove: .asciiz "Last move: "
+pvsc: .asciiz "X/you      vs.    O/computer"
 
 .text
 .globl print_table 

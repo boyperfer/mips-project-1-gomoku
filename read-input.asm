@@ -56,6 +56,7 @@ parse_string:
 		blt $t1, 48, error			# check if char is not a digit (ascii<'0')
 		bgt $t1, 57, error			# check if char is not a digit (ascii>'9')
 
+		move $k0, $t1
 		addi $t1, $t1, -48			# converts t1's ascii value to dec value
 		add $t6, $t6, $t1			# row index = $t1's dec value
 		addi $s4, $s4, -1			# decrement array address	
@@ -73,6 +74,7 @@ parse_string:
 		j multiDigits 
 
 	set_column:
+		move $k1, $t1
 		addi $t1, $t1, -65			# convert char's ascii value to integer 
 		move $t7, $t1				# t7 = index column
 
