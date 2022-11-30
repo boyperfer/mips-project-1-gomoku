@@ -91,10 +91,10 @@ lower_bound_for_vertical:
 	j loop_on_the_smaller_partition 
 	
 	lower_V:
-		lb $t1, ($t9)							# load symbol at register $t9
-		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
-		addi $t3, $t3, 1						# if the symbol is "X or O" increase winning counter by 1
-		j initialize_larger_partition				# jump to initialize_larger_partition
+		lb $t1, ($t9)					# load symbol at register $t9
+		bne $t1, $t2, initialize_larger_partition	# if the symbol is not "X or O" branch to initialize_larger_partition
+		addi $t3, $t3, 1				# if the symbol is "X or O" increase winning counter by 1
+		j initialize_larger_partition			# jump to initialize_larger_partition
 
 lower_bound_for_L_diagonal:
 	beq $t8, $0, lower_L					# if the row index = 0 then the lower bound is the cell itself
@@ -107,10 +107,10 @@ lower_bound_for_L_diagonal:
 	j loop_on_the_smaller_partition		
 			
 	lower_L:
-		lb $t1, ($t9)						# load symbol at address t9
-		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
-		addi	$t3, $t3, 1					# if the symbol is "X or O" increase winning counter by 1
-		j initialize_larger_partition				# jump to inialize_larger_partition
+		lb $t1, ($t9)					# load symbol at address t9
+		bne $t1, $t2, initialize_larger_partition	# if the symbol is not "X or O" branch to initialize_larger_partition
+		addi	$t3, $t3, 1				# if the symbol is "X or O" increase winning counter by 1
+		j initialize_larger_partition			# jump to inialize_larger_partition
 
 lower_bound_for_R_diagonal:
 	beq $t8, $0, lower_R					# if the row index = 0 then the lower bound is the cell itself
@@ -126,18 +126,18 @@ lower_bound_for_R_diagonal:
 	j loop_on_the_smaller_partition					
 			
 	lower_R:
-		lb $t1, ($t9)						# load symbol at address t9
-		bne $t1, $t2, initialize_larger_partition		# if the symbol is not "X or O" branch to initialize_larger_partition
-		addi $t3, $t3, 1					# if the symbol is "X or O" increase winning counter by 1
-		j initialize_larger_partition				# jump to inialize_larger_partition
+		lb $t1, ($t9)					# load symbol at address t9
+		bne $t1, $t2, initialize_larger_partition	# if the symbol is not "X or O" branch to initialize_larger_partition
+		addi $t3, $t3, 1				# if the symbol is "X or O" increase winning counter by 1
+		j initialize_larger_partition			# jump to inialize_larger_partition
 		
 	adjust_lower:
-		addi $t4, $s2, -1					# $t4 <-- column size - 1
-		mul $t4, $t4, -1					# the number of steps for each move for pointer = - row size
-		add $s3, $t8, $t7 					# row index + column index
-		sub $s3, $s1, $s3					# row size - (row index + column index)
-		mul $s3, $s1, $s3					# row size * (row size - (row index + column index))
-		add $t6, $t6, $s3					# address the lower bound
+		addi $t4, $s2, -1				# $t4 <-- column size - 1
+		mul $t4, $t4, -1				# the number of steps for each move for pointer = - row size
+		add $s3, $t8, $t7 				# row index + column index
+		sub $s3, $s1, $s3				# row size - (row index + column index)
+		mul $s3, $s1, $s3				# row size * (row size - (row index + column index))
+		add $t6, $t6, $s3				# address the lower bound
 		j loop_on_the_smaller_partition									
 
 upper_bound_for_horizontal:
@@ -211,7 +211,7 @@ sufficient_condition:
 
 
 done_checking:
-	move $v0, $t3					# return winningCounter
+	move $v0, $t3						# return winningCounter
 	move $v1, $t9			
 	jr $ra							# return to main
 	
@@ -249,13 +249,13 @@ playerwin:
 	li $v0, 12						# get the user input
 	syscall
 	
-	beq $v0, 89, play_again		# if Y go to play_again, else terminate the program
+	beq $v0, 89, play_again					# if Y go to play_again, else terminate the program
 
 	li $v0, 10						# code for exit
 	syscall							# exit
 	
 play_again:
-	jal clear_screen				# clear the screen
+	jal clear_screen					# clear the screen
 	li $t3, 0						# reset winning counter
 	jal main						# start a new match from main
 

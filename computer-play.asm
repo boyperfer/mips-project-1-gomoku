@@ -96,8 +96,8 @@ linear_probing:
 
 zero_pointer:
 	li $t3, -1					# t3 = -1
-	add $t3, $t3, $s0			# address of t3
-	j linear_probing			# jump to linear_probing
+	add $t3, $t3, $s0				# address of t3
+	j linear_probing				# jump to linear_probing
 	
 check_winning_comp:
 		addi $sp, $sp, -4			# make room for stack fram
