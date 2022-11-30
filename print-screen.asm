@@ -13,7 +13,7 @@ print_screen:
 		move $t9, $a3				# player column index
 		
 		addi $sp, $sp, -4			# make room for stack frame
-		sw $ra, 0($sp)				# store $ra	
+		sw $ra, 0($sp)				# store return address of calling function
 		jal print_table
 		
 		li $v0, 4				# print string

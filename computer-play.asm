@@ -37,7 +37,7 @@ computer_play:
 
 
 probing:
-	blt $t6, $zero, random_play			# if pointer moves out of lower bound
+	blt $t6, $s0, random_play			# if pointer moves out of lower bound
 	li $t7, '.'					# load '.'
 	add $t6, $t6, $t4				# probing bac
 	lb $t8, ($t6)					# load operand
@@ -95,12 +95,13 @@ linear_probing:
 	j check_winning_comp				# jump check_winning_comp
 
 zero_pointer:
-	li $t3, -1
-	j linear_probing
+	li $t3, -1					# t3 = -1
+	add $t3, $t3, $s0			# address of t3
+	j linear_probing			# jump to linear_probing
 	
 check_winning_comp:
 		addi $sp, $sp, -4			# make room for stack fram
-		sw $ra, 0($sp)				# store $ra	
+		sw $ra, 0($sp)				# store return address of calling function
 
 		lw $a0, rowIComp			# load rowIComp
 		lw $a1, colIComp			# load colIComp
@@ -128,9 +129,9 @@ check_winning_comp:
 
 		lw $ra, 0($sp)				# load register address
 		addi $sp, $sp, 4			# restore stack pointer
-		lw  $v0, rowIComp
-		addi $v0, $v0, 1
-		lw $v1, colIComp
-		addi $v1, $v1, 65
+		lw  $v0, rowIComp			# load row index of computer
+		addi $v0, $v0, 1			# return for displaying row move of computer
+		lw $v1, colIComp			# load column index of computer
+		addi $v1, $v1, 65			# convert to uppercase letter for displaying col move of computer
 		jr $ra					# jump to calling function
 

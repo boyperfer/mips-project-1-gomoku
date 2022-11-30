@@ -82,13 +82,13 @@ print_table:
 		j print_matrix_row							# jump back to print_matrix_row
 		
 	print_matrix_row_end:
-		li $v0, 4
-		la $a0, pvsc
-		syscall
+		li $v0, 4									# code to print string 
+		la $a0, pvsc								# load pvsc
+		syscall										# call
 		
-		li $v0, 11
-		li $a0, '\n'	
-		syscall					
+		li $v0, 11									# code to print char
+		li $a0, '\n'								# load new line
+		syscall										# call
 		jr $ra										# jump back to calling function
 
 	print_column_1_digit:

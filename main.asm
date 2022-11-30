@@ -16,17 +16,17 @@ main:
 	jal read_table
 	jal print_table
 	move $t0, $s1			# calculate the maximum move for draw condition
-	move $t1, $s0
+	move $t1, $s2
 	mul  $t0, $t0, $t1
-	srl $t0, $t0, 1
+	srl $t0, $t0, 1			# (column size * row size) / 2
 	sw $t0, maxMove
 	li $k0, 0
 	play:
 		jal player_play
-		move $a0, $v0		# get the player row index
-		move $a1, $v1		# get the player column index
-		sw $t0, pri
-		sw $t1, pci
+		move $a0, $v0			# $a0 = the cell recommended for computer to move
+		move $a1, $v1			# $a1 = the number of steps or probing
+		sw $t0, pri				# get the player row index
+		sw $t1, pci				# get the player column index
 		jal computer_play
 		sw $v0, cri		# get the computer row index
 		sw $v1, cci		# get the computer column index
@@ -34,12 +34,12 @@ main:
 		lw $t0, maxMove
 		beq $k0, $t0, draw	# check for draw 
 		jal clear_screen
-		lw $a0, cri
-		lw $a1, cci
-		lw $a2, pri
-		lw $a3, pci
-		jal print_screen
-		j play
+		lw $a0, cri				# a0 = computer row index
+		lw $a1, cci				# a1 = computer column index
+		lw $a2, pri				# a2 = player row index
+		lw $a3, pci				# a3 = player column index
+		jal print_screen		# jump to print_screen
+		j play					# jump back to play
 	
 	draw:
 		li $v0, 4		# print out draw message

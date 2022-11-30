@@ -8,8 +8,8 @@ symbol: .word 0
 .text
 .globl check_winning 
 
-# $a0 = row index, $a1 = column index, $a2 = 'X',
-# $a3 == 0 ? "check horizontal" : $a3 == 1 ? "check vertical" : "check diagonal"
+# $a0 = row index, $a1 = column index, $a2 = 'X or O',
+# $a3 == 0 ? "check horizontal" : $a3 == 1 ? "check vertical" : $a3 == 2 ? "check left diagonal" : "check right diagonal"
 check_winning:
 	li $t0, 0						# initialize counter when checking the larger partition
 	li $s7, 5						# initialize condition to win
