@@ -9,30 +9,30 @@ newline: .asciiz "\n"
 .globl read_input
 
 read_input:
-	li $v0, 4						# code for print string
+	li $v0, 4					# code for print string
 	la $a0, prompt					# load prompt message 
-	syscall							# print prompt message
+	syscall						# print prompt message
 
 	la $s4, array					# set base address of array to s4
 	li $t2, 0
 	loop:					
-		li $v0, 8					# code for read string
+		li $v0, 8				# code for read string
 		la $a0, char				# load address of char for read
-		li $a1, 2					# length = 2 (1byte char and 1byte null)
-		syscall						# store the char byte from input buffer into char
+		li $a1, 2				# length = 2 (1byte char and 1byte null)
+		syscall					# store the char byte from input buffer into char
 
 		lb $t0, char				# load the char from char buffer into t0, stripping null
 		sb $t0, 0($s4)				# store the char into the nth elem of array
 		addi $t2, $t2, 1			# length of array += 1
 
 		lb $t1, newline				# load newline 
-		beq $t0, $t1, parse_string  # end of string (when press enter)?  jump to parse_string 
+		beq $t0, $t1, parse_string  		# end of string (when press enter)?  jump to parse_string 
 
 		addi $s4, $s4, 1			# increments base address of array
-		j loop						# jump to loop
+		j loop					# jump to loop
 
 parse_string:           
-	li $t1, 6						# $t1 = 6 
+	li $t1, 6					# $t1 = 6 
 	bge $t2, $t1, error				# if length of input >= 6 ? jump to error
 
 	addi $s4, $s4, -1				# reposition array pointer to last char before newline char
@@ -48,9 +48,9 @@ parse_string:
 	j set_column					# jump to set_column
 
 	digits_for_row:
-		add $t6, $zero, $zero		# initialize row index to 0
-		li $t0, 10					# set t0 = 10 for decimal conversion
-		li $t3, 1					# t3 for power of 10 	
+		add $t6, $zero, $zero			# initialize row index to 0
+		li $t0, 10				# set t0 = 10 for decimal conversion
+		li $t3, 1				# t3 for power of 10 	
 
 		lb $t1, 0($s4)				# load char from array into t1
 		blt $t1, 48, error			# check if char is not a digit (ascii<'0')
@@ -63,7 +63,7 @@ parse_string:
 	multiDigits:         
 		mul $t3, $t3, $t0			# multiply power by 10
 
-		beq $s4, $s3, set_row		# set row if beginning of string is reached
+		beq $s4, $s3, set_row			# set row if beginning of string is reached
 
 		lb $t1, ($s4)				# load char from array into t1
 		addi $t1, $t1, -48			# converts t1's ascii value to dec value
@@ -89,23 +89,23 @@ done:
 	bgt $t7, $s2, error				# erorr if column index > column size
 		
 	mul $t5, $t6, $s2				# $t5 (array pointer) <-- row index* column size 
-	add $t5, $t5, $t7               # $t5 <-- row index * column size + column index
+	add $t5, $t5, $t7              			# $t5 <-- row index * column size + column index
 	add $t5, $s0, $t5				# $t5 <-- base address + (row index * column size + column index)
 
 	move $v0, $t6					# return row index
 	move $v1, $t7					# return column index
 
-	li $t7, '.'						# load '.'
+	li $t7, '.'					# load '.'
 	lb $t8, ($t5)					# load $t5 operand
 	bne $t8, $t7, error				# if $t7 is not equal to $t8 (overlap), jump to error
-	li $t7, 'X'						# load 'X'
+	li $t7, 'X'					# load 'X'
 	sb $t7, 0($t5)					# store 'X' into array
-	jr $ra							# jump back to calling function
+	jr $ra						# jump back to calling function
 
 error:
-li $v0, 4							# code to print string
-la $a0, errorMessage				# load errorMessage
-syscall								# print
+li $v0, 4						# code to print string
+la $a0, errorMessage					# load errorMessage
+syscall							# print
 
 j read_input						# print read_input
 

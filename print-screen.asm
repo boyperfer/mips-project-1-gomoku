@@ -60,8 +60,8 @@ print_screen:
 		li $a0, '\n'
 		syscall
 		
-		lw $ra, 0($sp)					# load register address
-		addi $sp, $sp, 4           			# restore stack 
+		lw $ra, 0($sp)				# load register address
+		addi $sp, $sp, 4           		# restore stack 
 		jr $ra
 		
 	
